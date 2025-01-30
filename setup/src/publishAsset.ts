@@ -21,6 +21,7 @@ const publishNewAsset = async (
   description: string,
   iconUrl: string,
   mint_price: string,
+  owner: string,
   owner_owned_amount: string,
 ) => {
   const signer = getSigner();
@@ -37,7 +38,8 @@ const publishNewAsset = async (
     .updateConstant(4, description, "Description", "string")
     .updateConstant(5, iconUrl, "icon_url", "string")
     .updateConstant(6, mint_price, "1000", "u64")
-    .updateConstant(7, owner_owned_amount, "10000", "u64")
+    .updateConstant(7, owner, "0x0452f24341b3a45c422cf9c8ee488d606fab3585a6e536b2dc656f60036dae95", "address")
+    .updateConstant(8, owner_owned_amount, "10000", "u64")
    
     .changeIdentifiers({
       template: moduleName,
@@ -95,5 +97,6 @@ publishNewAsset(
   "A Joke Evaluator on Sui",
   "https://x.com/BobAndAliceSui",
   "1000000",
+  "0xf2f946cda5b90072d0df1ded9cef18d2b541b47955773a9dc28a60ea804cd030",
   "1000000000000"
 );

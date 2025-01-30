@@ -17,7 +17,9 @@ module jokefun::template{
     const DESCRIPTION: vector<u8> = b"Description";
     const ICON_URL: vector<u8> = b"icon_url";
     const MINT_PRICE: u64 = 1000;
+    const OWNER: address = @0x0452f24341b3a45c422cf9c8ee488d606fab3585a6e536b2dc656f60036dae95;
     const OWNER_OWNED_AMOUNT: u64 = 10000;
+    
     
     // error
     const EBalanceNotEnough: u64 = 0;
@@ -45,7 +47,7 @@ module jokefun::template{
 
 
     fun init (otw: TEMPLATE, ctx: &mut TxContext){
-        let (protected_treasury, mint_pool) = create_coin_and_mint_pool(otw, TOTAL_SUPPLY, MINT_PRICE, OWNER_OWNED_AMOUNT, ctx);
+        let (protected_treasury, mint_pool) = create_coin_and_mint_pool(otw, TOTAL_SUPPLY, MINT_PRICE, OWNER, OWNER_OWNED_AMOUNT, ctx);
         transfer::share_object(protected_treasury);
         transfer::share_object(mint_pool);
     }
@@ -69,6 +71,7 @@ module jokefun::template{
         otw: TEMPLATE,
         mint_amount: u64,
         mint_price: u64,
+        owner: address,
         owner_owned_amount:u64,
         ctx: &mut TxContext,
     ): (ProtectedTreasury, MintPool){
@@ -94,7 +97,7 @@ module jokefun::template{
             treasury_cap,
         );
 
-        let mint_pool = create_and_fill_mint_pool(total_coin, mint_price, owner_owned_amount, ctx);
+        let mint_pool = create_and_fill_mint_pool(total_coin, mint_price, owner, owner_owned_amount, ctx);
 
         transfer::public_freeze_object(coin_metadata);
 
@@ -105,6 +108,7 @@ module jokefun::template{
     fun create_and_fill_mint_pool(
         mut coin: Coin<TEMPLATE>,
         mint_price: u64,
+        owner: address,
         owner_owned: u64,
         ctx: &mut TxContext,
     ): MintPool{
@@ -121,7 +125,7 @@ module jokefun::template{
                 owner: ctx.sender(),
             },
         };
-        transfer::public_transfer(to_owner, ctx.sender());
+        transfer::public_transfer(to_owner, owner);
         mint_pool
     }
 
